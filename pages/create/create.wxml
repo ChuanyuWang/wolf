@@ -1,0 +1,50 @@
+<!--pages/create/create.wxml-->
+<view class='create-game-panel'>
+  <view>
+    <picker bindchange="bindPlayerChange" value="{{players_index}}" range="{{players_range}}">
+      <view class="picker">
+        玩家总人数：{{players}}
+      </view>
+    </picker>
+  </view>
+
+  <view class='mutant-setting'>
+    <checkbox-group bindchange="checkMutantChange">
+      <label class="checkbox" wx:for="{{roles}}" wx:key='{{item.role}}'>
+        <checkbox value="{{item.value}}" checked="{{item.checked}}" />{{item.name}}
+      </label>
+    </checkbox-group>
+  </view>
+
+  <view class='wolf-setting'>
+    <picker bindchange="bindWolfChange" value="{{wolf_index}}" range="{{wolf_range}}">
+      <view class="picker" style='align-self:center'>
+        狼人：{{wolf}}
+      </view>
+    </picker>
+  </view>
+  <view>
+    <checkbox-group bindchange="checkWolfChange">
+      <label class="checkbox" wx:for="{{wolf_roles}}" wx:key='{{item.role}}'>
+        <checkbox value="{{item.value}}" checked="{{item.checked}}" />{{item.name}}
+      </label>
+    </checkbox-group>
+  </view>
+
+  <view class='' style='color:{{villagers < 1 ? "red" : ""}}'>村民：{{villagers}}</view>
+  <text style='margin: 30rpx 0rpx 0rpx 0rpx'> 高级设置 </text>
+  <view class='advance-setting'>
+    <view class='witch-setting'>
+      <text>首夜女巫自救: </text>
+      <radio-group class="radio-group" bindchange="radioChange">
+        <label class="radio">
+          <radio value="true" />能
+        </label>
+        <label class="radio">
+          <radio value="false" checked="true" />不能
+        </label>
+      </radio-group>
+    </view>
+  </view>
+  <button bindtap='createGame'> 创建房间 </button>
+</view>

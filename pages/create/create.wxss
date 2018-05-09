@@ -1,0 +1,22 @@
+/* pages/create/create.wxss */
+
+.create-game-panel {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+.witch-setting {
+  display: flex;
+  margin: 7rpx 0rpx 20rpx 0rpx
+}
+
+.picker{
+  padding: 6px;
+  margin: 20rpx;
+  background-color: #FFFFFF;
+  border: 1rpx black solid
+}

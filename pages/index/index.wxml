@@ -1,0 +1,21 @@
+<!--index.wxml-->
+<view class="container">
+  <view wx:if="{{!hasUserInfo}}">
+    <view class="welcome-tip">
+      <text>点击开始进行游戏</text>
+      <button wx:if="{{!hasUserInfo && canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 开始游戏 </button>
+    </view>
+  </view>
+  <view wx:else>
+    <view class='userinfo'>
+      <block>
+        <image class="userinfo-avatar" src="{{userInfo.avatarUrl}}" background-size="cover"></image>
+        <text class="userinfo-nickname">{{userInfo.nickName}}</text>
+      </block>
+    </view>
+    <button bindtap="createGame"> 创建房间 </button>
+    <button> 加入游戏 </button>
+    <button> 个人战绩 </button>
+    <button> 查看帮助 </button>
+  </view>
+</view>
