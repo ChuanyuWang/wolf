@@ -39,82 +39,163 @@ Page({
     wolf: 2,
     wolf_index: 0,
     wolf_range: [2, 3, 4, 5, 6, 7, 8, 9],
-    villagers: 3,
+    villagers: 2,
     roles: ROLES,
     wolf_roles: WOLF_ROLES,
-    selected_roles: ['seer', 'witch'],
-    selected_wolf_roles: []
+    options: {
+      witch_save_on_first_night: false
+    }
+  },
+
+  count: function(roles) {
+    var count = 0;
+    roles.forEach(function(value){
+      if (value.checked) count++;
+    })
+    return count;
   },
 
   bindPlayerChange: function (e) {
+    var player_number = this.data.players_range[e.detail.value];
+    if (player_number - this.data.wolf - this.count(this.data.roles) < 1) {
+      this.warnVillagersCount()
+      return;
+    }
+
     this.setData({
-      players: this.data.players_range[e.detail.value]
+      players: player_number,
+      players_index: e.detail.value,
+      villagers: player_number - this.data.wolf - this.count(this.data.roles)
     })
     let new_wolf_range = [];
-    for (let i = 2; i <= this.data.players / 2; i++) {
+    for (let i = 2; i <= this.data.players / 2 + 1; i++) {
       new_wolf_range.push(i);
     }
     //更新狼人数量选择区间
     this.setData({
       wolf_range: new_wolf_range
     })
-    this.checkVillagersCount()
   },
   checkMutantChange: function (e) {
+    // 村民数量不能少于1
+    let mutant_number = e.detail.value.length
+    if (this.data.players - mutant_number - this.data.wolf < 1) {
+      // restore the roles
+      this.setData({
+        roles: this.data.roles
+      })
+      this.warnVillagersCount()
+      return;
+    }
+
+    for (var i = 0; i < this.data.roles.length; i++) {
+      var item = this.data.roles[i];
+      item.checked = false;
+      for (var j = 0; j < e.detail.value.length; j++) {
+        if (item.value == e.detail.value[j]) {
+          item.checked = true
+          break;
+        }
+      }
+    }
+
+    // update roles
     this.setData({
-      selected_roles: e.detail.value
+      roles: this.data.roles,
+      villagers: this.data.players - this.data.wolf - mutant_number
     })
-    this.checkVillagersCount()
+    //this.checkVillagersCount()
   },
   bindWolfChange: function (e) {
-    this.setData({
-      wolf: this.data.wolf_range[e.detail.value]
-    })
-    if (this.data.wolf < this.data.selected_wolf_roles.length) {
-      this.setData({
-        wolf_roles: WOLF_ROLES
-      })
+    var wolf_number = this.data.wolf_range[e.detail.value]
+    if (this.data.players - wolf_number - this.count(this.data.roles) < 1) {
+      this.warnVillagersCount()
+      return;
     }
-    this.checkVillagersCount()
-  },
-  checkWolfChange: function (e) {
-    this.setData({
-      selected_wolf_roles: e.detail.value
-    })
-    if (this.data.selected_wolf_roles.length > this.data.wolf) {
-      // update wolf
-      this.setData({
-        //TODO, update wolf_index
-        wolf: this.data.selected_wolf_roles.length
-      })
-    }
-    this.checkVillagersCount()
-  },
-  checkVillagersCount: function () {
-    //更新村民数量
-    this.setData({
-      villagers: this.data.players - this.data.wolf - this.data.selected_roles.length
-    })
-    if (this.data.villagers < 1) {
+    if (wolf_number < this.count(this.data.wolf_roles)) {
+      //狼人数量小于狼人角色数量
       wx.showModal({
         title: '错误',
-        content: '屠边局村民的人数不能少于1人',
+        content: '狼人数量小于狼人角色数量',
         showCancel: false
       })
+      return;
     }
+    // update wolf
+    this.setData({
+      wolf: wolf_number,
+      wolf_index: e.detail.value,
+      villagers: this.data.players - wolf_number - this.count(this.data.roles)
+    })
+  },
+  checkWolfChange: function (e) {
+    // 村民数量不能少于1
+    let wolf_number = e.detail.value.length > this.data.wolf ? e.detail.value.length : this.data.wolf
+    if (this.data.players - wolf_number - this.count(this.data.roles) < 1) {
+      // restore the wolf roles
+      this.setData({
+        wolf_roles: this.data.wolf_roles
+      })
+      this.warnVillagersCount()
+      return;
+    }
+
+    // update wolf
+    this.setData({
+      wolf: wolf_number,
+      //TODO, update wolf_index
+      //wolf_index: TBD
+      villagers: this.data.players - wolf_number - this.count(this.data.roles)
+    })
+
+    for (var i = 0; i < this.data.wolf_roles.length; i++) {
+      var item = this.data.wolf_roles[i];
+      item.checked = false;
+      for (var j = 0; j < e.detail.value.length; j++) {
+        if (item.value == e.detail.value[j]) {
+          item.checked = true
+          break;
+        }
+      }
+    }
+
+    this.setData({
+      wolf_roles: this.data.wolf_roles
+    })
+  },
+  warnVillagersCount: function () {
+    wx.showModal({
+      title: '错误',
+      content: '屠边局村民的人数不能少于1人',
+      showCancel: false
+    })
+  },
+
+  setWitchOption: function(e) {
+    this.setData({
+      'options.witch_save_on_first_night': Boolean(e.detail)
+    })
   },
 
   createGame: function () {
+    // get selected roles
+    var wolf_roles = this.data.wolf_roles.filter(function(value){
+      return value.checked
+    })
+    var roles = this.data.roles.filter(function (value) {
+      return value.checked
+    })
     var gameoptions = {
       type: 'lyingman',
       player_number: this.data.players,
       wolf_number: this.data.wolf,
       villager_number: this.data.villagers,
-      wolf_roles: this.data.selected_wolf_roles,
-      roles: this.data.selected_roles
+      wolf_roles: wolf_roles,
+      roles: roles,
+      options: this.data.options
     }
     wx.request({
-      url: app.config.baseUrl + '/wx/creategame',  // 获取openid
+      url: app.config.baseUrl + '/wx/creategame', 
       method: 'POST',
       data: gameoptions,
       success: res => {

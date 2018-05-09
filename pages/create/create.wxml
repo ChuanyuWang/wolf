@@ -36,7 +36,7 @@
   <view class='advance-setting'>
     <view class='witch-setting'>
       <text>首夜女巫自救: </text>
-      <radio-group class="radio-group" bindchange="radioChange">
+      <radio-group class="radio-group" bindchange="setWitchOption">
         <label class="radio">
           <radio value="true" />能
         </label>
