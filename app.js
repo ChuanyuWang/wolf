@@ -52,7 +52,7 @@ App({
     userInfo: null,
     openid: null,
     room: -1, // -1 表示没有游戏在进行
-    isHost: false
+    isJudge: false
   },
   config: {
     baseUrl : 'http://localhost:3000'

@@ -192,14 +192,19 @@ Page({
       villager_number: this.data.villagers,
       wolf_roles: wolf_roles,
       roles: roles,
-      options: this.data.options
+      options: this.data.options,
+      judge: app.globalData.openid
     }
     wx.request({
       url: app.config.baseUrl + '/wx/creategame', 
       method: 'POST',
       data: gameoptions,
       success: res => {
-        console.log(res.data);
+        app.globalData.isJudge = true
+        app.globalData.room = res.data
+        wx.redirectTo({
+          url: '../gamepanel/gamepanel?room=' + res.data
+        })
       }
     })
   },
