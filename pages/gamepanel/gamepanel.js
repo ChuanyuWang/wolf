@@ -17,6 +17,27 @@ Page({
     if (options.room) {
       app.globalData.room = options.room
     }
+    // 保持屏幕常亮
+    wx.setKeepScreenOn({
+      keepScreenOn: true
+    })
+
+    wx.connectSocket({
+      url: 'ws://localhost:3000/',
+      data: {
+        x: '',
+        y: ''
+      },
+      header: {
+        'content-type': 'application/json'
+      },
+      protocols: ['protocol1'],
+      method: "GET"
+    })
+
+    wx.onSocketOpen(function (res) {
+      console.log('WebSocket连接已打开！')
+    })
   },
 
   /**
