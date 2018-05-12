@@ -56,7 +56,10 @@ Page({
   },
 
   loopGameEvent(socket) {
-
+    socket.on('update', (data) => {
+      if (data.error)
+        return console.error(data.error);
+    });
   },
 
   /**
