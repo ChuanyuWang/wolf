@@ -1,2 +1,31 @@
 <!--pages/gamepanel/gamepanel.wxml-->
-<text>pages/gamepanel/gamepanel.wxml</text>
+<view class='top-bar'>
+  <button size='mini'>身份</button>
+  <label class='progress-info'>第一天</label>
+  <button size='mini'>身份</button>
+</view>
+<view class='game-room'>
+  <view class='players'>
+    <view class='left-player' wx:for="{{left_players}}" wx:key='{{item.seat}}' data-player='{{item}}' bindtap='selectPlayer'>
+      <block>
+        <image class="player-img" src="{{item.avatarUrl}}" background-size="cover"></image>
+        <text>{{item.seat}}</text>
+      </block>
+    </view>
+  </view>
+  <view class='history-log'>
+    <text wx:for="{{logs}}" wx:key="{{item.day}}">{{item.message}}</text>
+  </view>
+  <view class='players'>
+    <view class='right-player' wx:for="{{right_players}}" wx:key='{{item.seat}}' data-player='{{item}}' bindtap='selectPlayer'>
+      <block>
+        <image class="player-img" src="{{item.avatarUrl}}" background-size="cover"></image>
+        <text>{{item.seat}}</text>
+      </block>
+    </view>
+  </view>
+</view>
+<view class='player-action'>
+  <!-- action of judge to start game -->
+  <button wx:if="{{app.globalData.isJudge && next=='sit down'}}">开始游戏</button>
+</view>

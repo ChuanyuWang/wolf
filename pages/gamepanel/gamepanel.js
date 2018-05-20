@@ -9,7 +9,21 @@ Page({
    * 页面的初始数据
    */
   data: {
-
+    left_players: [],
+    right_players: [],
+    players: [],
+    selected: [],
+    targets : 0,
+    roles: '',
+    next: '',
+    logs: [
+      { day: 1, message: '第一天' },
+      { day: 2, message: '第一天' },
+      { day: 3, message: '第一天' },
+      { day: 4, message: '第一天' },
+      { day: 5, message: '第一天' },
+      { day: 6, message: '第一天' }
+    ]
   },
 
   handleConnectEvent(socket) {
@@ -59,7 +73,74 @@ Page({
     socket.on('update', (data) => {
       if (data.error)
         return console.error(data.error);
+      console.log(data);
+      this.updateGamePanel(data);
     });
+  },
+
+  selectPlayer: function(event) {
+    let player = event.currentTarget.dataset.player;
+    if (this.data.targets === 0) return;
+    player.selected = true;
+    this.data.selected.push(player);
+    if (this.data.selected.length > this.data.targets) {
+      this.data.selected.splice(0, 1)[0].selected = false;
+    }
+    // update selected flag in all players
+    this.data.players.forEach((value, index, array) => {
+      for (var i = 0;i<this.data.selected.length;i++) {
+        if (value.seat == this.data.selected[i].seat) value.selected = true;
+        else value.selected = false;
+      }
+    })
+    if (this.data.next == 'sit down') {
+      this.socket.emit('sit', player.seat, app.globalData.userInfo)
+    }
+    this.updatePlayers(this.data.players);
+  },
+
+  updateGamePanel: function (room) {
+    this.updatePlayers(room.players);
+    this.setData({
+      roles: room.roles,
+      next: room.next
+    })
+    if (room.next == 'sit down') {
+      this.setData({
+        targets: 1,
+        selected: []
+      })
+    }
+  },
+
+  updatePlayers: function (players) {
+    var allPlayers = (players || []).map(function (value, index, array) {
+      //TODO, handle status
+      return {
+        seat: value.seat,
+        avatarUrl: value.avatarUrl ? value.avatarUrl : '/images/sitdown.png',
+        role: value.role,
+        isDead: value.isDead,
+        isExiled: value.isExiled,
+        selected: value.selected
+      };
+    })
+    console.log(allPlayers);
+    this.setData({
+      players: allPlayers,
+      left_players: this.getLeftPlayers(allPlayers),
+      right_players: this.getRightPlayers(allPlayers)
+    })
+  },
+
+  getLeftPlayers: function(players) {
+    let mid = Math.ceil((players || []).length/2);
+    return (players || []).slice(0, mid);
+  },
+
+  getRightPlayers: function (players) {
+    let mid = Math.ceil((players || []).length / 2);
+    return (players || []).slice(mid);
   },
 
   /**
@@ -71,7 +152,7 @@ Page({
     }
 
     // To be delete, debug only
-    app.globalData.room = app.globalData.room == -1 ? 7231 : app.globalData.room
+    app.globalData.room = app.globalData.room == -1 ? 2225 : app.globalData.room
 
     // 保持屏幕常亮
     wx.setKeepScreenOn({

@@ -1,1 +1,59 @@
 /* pages/gamepanel/gamepanel.wxss */
+.top-bar {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  font-size: 32rpx;
+}
+
+.progress-info {
+  flex-grow: 1;
+  text-align: center;
+}
+
+.game-room {
+  display: flex;
+  flex-direction: row;
+}
+
+.players {
+  width: 148rpx;
+}
+
+.history-log {
+  flex-grow: 1;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  font-size: 28rpx;
+  height: 800rpx;
+}
+
+.left-player {
+  margin-top: 10rpx;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.right-player {
+  margin-top: 10rpx;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.player-img {
+  width: 96rpx;
+  height: 96rpx;
+  margin: 2rpx;
+  border-radius: 50%;
+}
+
+.player-action {
+  display: flex;
+  flex-direction: column;
+}
