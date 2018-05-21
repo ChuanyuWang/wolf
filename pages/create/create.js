@@ -200,6 +200,13 @@ Page({
       method: 'POST',
       data: gameoptions,
       success: res => {
+        if (res.statusCode !== 200) {
+          return wx.showModal({
+            title: '错误',
+            content: '创建游戏失败',
+            showCancel: false
+          })
+        }
         app.globalData.isJudge = true
         app.globalData.room = res.data
         wx.redirectTo({

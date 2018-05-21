@@ -23,7 +23,8 @@ Page({
       { day: 4, message: '第一天' },
       { day: 5, message: '第一天' },
       { day: 6, message: '第一天' }
-    ]
+    ],
+    isJudge: false
   },
 
   handleConnectEvent(socket) {
@@ -94,9 +95,18 @@ Page({
       }
     })
     if (this.data.next == 'sit down') {
-      this.socket.emit('sit', player.seat, app.globalData.userInfo)
+      // TODO, dummy user is to be removed
+      this.socket.emit('sit', player.seat, app.globalData.userInfo || {
+        openid: "test open id",
+        nickname: "test",
+        avatarUrl: "https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTLw0PBbQWuXPo8XqvQ8oZwmAsoJPfTiaQyAYIMUrhywIlicNzKnBxbFcZCC2kpaBJEXgibmicfibXFuWbg/132"
+      })
     }
     this.updatePlayers(this.data.players);
+  },
+
+  startGame: function(event) {
+    this.socket.emit('start', app.globalData.room)
   },
 
   updateGamePanel: function (room) {
@@ -125,7 +135,6 @@ Page({
         selected: value.selected
       };
     })
-    console.log(allPlayers);
     this.setData({
       players: allPlayers,
       left_players: this.getLeftPlayers(allPlayers),
@@ -157,6 +166,10 @@ Page({
     // 保持屏幕常亮
     wx.setKeepScreenOn({
       keepScreenOn: true
+    })
+
+    this.setData({
+      isJudge: app.globalData.isJudge
     })
 
     this.socket = io('ws://localhost:3000/', {

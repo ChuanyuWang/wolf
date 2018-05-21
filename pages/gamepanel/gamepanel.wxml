@@ -8,7 +8,8 @@
   <view class='players'>
     <view class='left-player' wx:for="{{left_players}}" wx:key='{{item.seat}}' data-player='{{item}}' bindtap='selectPlayer'>
       <block>
-        <image class="player-img" src="{{item.avatarUrl}}" background-size="cover"></image>
+        <image wx:if="{{item.selected}}" class="selected-img" src="/images/selected.png"></image>
+        <image class="player-img" src="{{item.avatarUrl}}"></image>
         <text>{{item.seat}}</text>
       </block>
     </view>
@@ -19,6 +20,7 @@
   <view class='players'>
     <view class='right-player' wx:for="{{right_players}}" wx:key='{{item.seat}}' data-player='{{item}}' bindtap='selectPlayer'>
       <block>
+        <image wx:if="{{item.selected}}" class="selected-img" src="/images/selected.png"></image>
         <image class="player-img" src="{{item.avatarUrl}}" background-size="cover"></image>
         <text>{{item.seat}}</text>
       </block>
@@ -27,5 +29,7 @@
 </view>
 <view class='player-action'>
   <!-- action of judge to start game -->
-  <button wx:if="{{app.globalData.isJudge && next=='sit down'}}">开始游戏</button>
+  <block wx:if="{{next==='sit down'}}">
+    <button wx:if="{{isJudge}}" bindtap='startGame'>开始游戏</button>
+  </block>
 </view>
