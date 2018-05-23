@@ -1,9 +1,9 @@
 {
   "pages": [
     "pages/index/index",
+    "pages/gamepanel/gamepanel",
     "pages/create/create",
-    "pages/logs/logs",
-    "pages/gamepanel/gamepanel"
+    "pages/logs/logs"
   ],
   "window": {
     "backgroundTextStyle": "light",
