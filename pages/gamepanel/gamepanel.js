@@ -98,7 +98,7 @@ Page({
       // TODO, dummy user is to be removed
       this.socket.emit('sit', player.seat, app.globalData.userInfo || {
         openid: "test open id",
-        nickname: "test",
+        nickName: "test",
         avatarUrl: "https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTLw0PBbQWuXPo8XqvQ8oZwmAsoJPfTiaQyAYIMUrhywIlicNzKnBxbFcZCC2kpaBJEXgibmicfibXFuWbg/132"
       })
     }
@@ -176,7 +176,7 @@ Page({
       query: {
         room: app.globalData.room,
         userInfo: app.globalData.userInfo ? {
-          nickname: app.globalData.userInfo.nickname,
+          nickName: app.globalData.userInfo.nickName,
           avatarUrl: app.globalData.userInfo.avatarUrl
         } : {},
         openid: app.globalData.openid
